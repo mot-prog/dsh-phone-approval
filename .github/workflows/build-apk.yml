@@ -7,18 +7,18 @@ on:
 
 jobs:
   apk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write # release asset upload on tags
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "17"
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: Install Android packages
         run: yes | sdkmanager "build-tools;34.0.0" "platforms;android-34"
@@ -33,14 +33,14 @@ jobs:
       - name: Plugin self-test
         run: node plugin/test/harness.mjs
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dsh-approvals-apk
           path: app/build-out/dsh-approvals.apk
 
       - name: Attach APK to release (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: app/build-out/dsh-approvals.apk
           fail_on_unmatched_files: true

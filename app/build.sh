@@ -48,7 +48,9 @@ echo "== aapt2 link manifest =="
 echo "== javac =="
 rm -rf "$OUT/classes"
 mkdir -p "$OUT/classes"
-javac -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -d "$OUT/classes" \
+# -encoding UTF-8: sources contain UTF-8 glyphs (—, ✓); without it javac
+# falls back to the platform charset (US-ASCII on CI) and errors out.
+javac -encoding UTF-8 -source 8 -target 8 -bootclasspath "$ANDROID_JAR" -d "$OUT/classes" \
   $(find "$APP_DIR/src" -name '*.java')
 
 echo "== d8 dex =="
