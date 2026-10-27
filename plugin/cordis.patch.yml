@@ -1,0 +1,10 @@
+# dsh-phone-approval bundle layer (declared by package.json "dsh.bundle.patch").
+# Mounted when the profile's package.json lists "dsh-phone-approval" in
+# dsh.profile.bundles. The loader appends this entry last, but that is fine:
+# the Web UI's host-side forwarding listener (api-remotes) registers only when
+# a browser connects, so this startup-registered listener is outermost in the
+# approval/request waterfall and the phone always races the Web UI.
+
+- insert:
+    - id: dsh-phone-approval
+      name: 'dsh-phone-approval'

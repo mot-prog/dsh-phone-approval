@@ -1,0 +1,4 @@
+app/build-out/
+*.keystore
+node_modules/
+out/

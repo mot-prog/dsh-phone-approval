@@ -1,0 +1,46 @@
+name: build-apk
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # release asset upload on tags
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android packages
+        run: yes | sdkmanager "build-tools;34.0.0" "platforms;android-34"
+
+      - name: Build APK
+        run: bash app/build.sh
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Plugin self-test
+        run: node plugin/test/harness.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dsh-approvals-apk
+          path: app/build-out/dsh-approvals.apk
+
+      - name: Attach APK to release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build-out/dsh-approvals.apk
+          fail_on_unmatched_files: true
