@@ -1,5 +1,9 @@
 // Standalone harness: stub ctx, exercise the approval waterfall + HTTP API.
-process.env.DSH_HOME = "/home/mot-prog/.dsh/build/test-home";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+// Portable scratch home — never a hardcoded dev path (CI runners can't mkdir
+// under someone's /home, which crashed the plugin's token-file bootstrap).
+process.env.DSH_HOME = join(tmpdir(), "dsh-phone-approval-test-home");
 process.env.DSH_PHONE_APPROVAL_PORT = "18790";
 process.env.DSH_PHONE_APPROVAL_BIND = "127.0.0.1";
 process.env.DSH_PHONE_APPROVAL_STALE_MS = "3000";
@@ -38,7 +42,7 @@ apply(ctx);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 await sleep(400); // let listen() settle
 
-const cfg = JSON.parse(readFileSync("/home/mot-prog/.dsh/build/test-home/phone-approval/config.json", "utf8"));
+const cfg = JSON.parse(readFileSync(join(process.env.DSH_HOME, "phone-approval/config.json"), "utf8"));
 const BASE = "http://127.0.0.1:18790";
 const auth = { authorization: `Bearer ${cfg.token}` };
 
