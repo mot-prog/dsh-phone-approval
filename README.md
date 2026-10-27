@@ -9,7 +9,7 @@ notification + in-app card showing the **exact command**, with
 wherever you answer first wins. If nobody answers, dsh falls back to its
 normal prompt and eventually fails closed — nothing is ever auto-allowed.
 
-![build-apk](https://github.com/OWNER/dsh-phone-approval/actions/workflows/build-apk.yml/badge.svg)
+![build-apk](https://github.com/mot-prog/dsh-phone-approval/actions/workflows/build-apk.yml/badge.svg)
 
 ## How it works
 
